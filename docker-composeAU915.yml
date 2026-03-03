@@ -1,0 +1,86 @@
+version: "3"
+
+services:
+  chirpstack:
+    image: chirpstack/chirpstack:4
+    command: -c /etc/chirpstack
+    restart: unless-stopped
+    volumes:
+      - ./configuration/chirpstack:/etc/chirpstack
+      #- ./lorawan-devices:/opt/lorawan-devices
+    depends_on:
+      - postgres
+      - mosquitto
+      - redis
+      - messageq
+    environment:
+      - MQTT_BROKER_HOST=mosquitto
+      - AMQP_BROKER_HOST=messageq
+      - REDIS_HOST=redis
+      - POSTGRESQL_HOST=postgres
+    ports:
+      - 8080:8080
+
+  chirpstack-gateway-bridge-au915:
+    image: chirpstack/chirpstack-gateway-bridge:4
+    restart: unless-stopped
+    ports:
+      - 1700:1700/udp
+    volumes:
+      - ./configuration/chirpstack-gateway-bridge-au915:/etc/chirpstack-gateway-bridge
+    depends_on: 
+      - mosquitto
+
+  chirpstack-rest-api:
+    image: chirpstack/chirpstack-rest-api:4
+    restart: unless-stopped
+    command: --server chirpstack:8080 --bind 0.0.0.0:8090 --insecure
+    ports:
+      - 8090:8090
+    depends_on:
+      - chirpstack
+
+     
+  messageq:
+    image: rabbitmq:3.12-management-alpine
+    container_name: messageq
+    hostname: messageq
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=a2access
+    ports:
+      - "55672:5672"
+      - "16672:15672"
+    volumes:
+      - "rmqdata:/var/lib/rabbitmq/"
+    #volumes:
+    #  - ./configuration/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    volumes:
+      - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
+      - postgresqldata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=root
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    ports:
+      - 2883:1883
+    volumes: 
+      - ./configuration/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+volumes:
+  postgresqldata:
+  redisdata:
+  rmqdata:

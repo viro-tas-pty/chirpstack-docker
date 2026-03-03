@@ -1,0 +1,20 @@
+
+
+exchanges needed 
+
+# currently the CS data is republished via a http endpoint and then pushed into rabbiltMQ for reading and pushing to Eratos,
+## However as of CS4 republishing directly from CS into rabbitMQ finally works, so teh publish step ios not strictly speaking necessary. It allows however for separating data streams   
+
+gpt.topic.sydneyGPT - > application.SydneyGPT
+# to be changed later
+#gpt.topic.hobartGPT -> application.HobartGPT
+gpt.topic _> application.HobartGPT
+#,application.SydneyGPT, all.GPT
+
+
+
+
+
+user / passwd 
+gpt.process / gpt2access
+
