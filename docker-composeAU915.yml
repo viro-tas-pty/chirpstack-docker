@@ -60,6 +60,8 @@ services:
   postgres:
     image: postgres:15-alpine
     restart: unless-stopped
+	ports:
+	      - "55432:5432"
     volumes:
       - ./configuration/postgresql/initdb:/docker-entrypoint-initdb.d
       - postgresqldata:/var/lib/postgresql/data

@@ -98,8 +98,13 @@
 
 
 [integration]
-  enabled=["mqtt"]
+  enabled=["mqtt","amqp"]
 
   [integration.mqtt]
     server="tcp://$MQTT_BROKER_HOST:1883/"
+    json=true
+
+  [integration.amqp]
+    url="amqp://guest:guest@$AMQP_BROKER_HOST:5672"
+    event_routing_key="application.{{application_id}}.device.{{dev_eui}}.event.{{event}}"
     json=true
