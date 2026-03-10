@@ -94,7 +94,7 @@
   # is never exposed. Changing this secret will invalidate all login and API
   # tokens. The following command can be used to generate a random secret:
   #   openssl rand -base64 32
-  secret="you-must-replace-this"
+  secret="5NnusIdeb08ki09XSl9X3f7nWhdY/tFdZCFMKnOZ2so="
 
 
 [integration]
@@ -105,6 +105,6 @@
     json=true
 
   [integration.amqp]
-    url="amqp://guest:guest@$AMQP_BROKER_HOST:5672"
+    url="amqp://admin:a2access@$AMQP_BROKER_HOST:5672"
     event_routing_key="application.{{application_id}}.device.{{dev_eui}}.event.{{event}}"
     json=true

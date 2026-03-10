@@ -58,7 +58,7 @@ services:
     #  - ./configuration/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.config
 
   postgres:
-    image: postgres:15-alpine
+    image: postgres:14-alpine
     restart: unless-stopped
 	ports:
 	      - "55432:5432"
